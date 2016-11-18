@@ -46,7 +46,7 @@ public abstract class RobotBase {
 		return true;
 	}
 	
-	public abstract void startCompetition();
+	public abstract void startCompetition() throws InterruptedException;
 	
 	public static void initializeHardwareConfiguration() {
 		// Set up "hardware"

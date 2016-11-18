@@ -33,7 +33,7 @@ public class SampleRobot extends RobotBase {
 	}
 	
 	@Override
-	public void startCompetition() {
+	public void startCompetition() throws InterruptedException {
 		robotInit();
 		
 		// TODO Tell the DS that the robot is ready
@@ -41,7 +41,30 @@ public class SampleRobot extends RobotBase {
 		robotMain();
 		if (!d_robotMainOverridden) {
 			while (true) {
-				// TODO implement
+				if (isDisabled()) {
+					disabled();
+					while (isDisabled()) {
+						Thread.sleep(10);
+					}
+				}
+				else if (isAutonomous()) {
+					autonomous();
+					while (isAutonomous() && !isDisabled()) {
+						Thread.sleep(10);
+					}
+				}
+				else if (isTest()) {
+					test();
+					while (isTest() && !isDisabled()) {
+						Thread.sleep(10);
+					}
+				}
+				else {
+					operatorControl();
+					while (isOperatorControl() && !isDisabled()) {
+						Thread.sleep(10);
+					}
+				}
 			}
 		}
 	}

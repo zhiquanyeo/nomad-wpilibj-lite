@@ -1,9 +1,13 @@
 package com.zhiquanyeo.nomad.network;
 
-public class DebugProtocol extends NomadProtocol {
+import java.net.Socket;
 
+public class DebugProtocol extends NomadProtocol {
+	private boolean d_isActive;
+	
 	public DebugProtocol() {
 		super("Debug", "1.0");
+		d_isActive = true;
 	}
 
 	@Override
@@ -13,14 +17,17 @@ public class DebugProtocol extends NomadProtocol {
 
 	@Override
 	public void setDigitalOutput(int channel, boolean value) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("Setting Digital #" + channel + ": " + value);
 	}
 
 	@Override
 	public void setAnalogOutput(int channel, double value) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("Setting Analog #" + channel + ": " + value);
+	}
+	
+	@Override
+	public void setPWMOutput(int channel, double value) {
+		System.out.println("Setting PWM #" + channel + ": " + value);
 	}
 
 	@Override
@@ -37,8 +44,7 @@ public class DebugProtocol extends NomadProtocol {
 
 	@Override
 	public void shutdown() {
-		// TODO Auto-generated method stub
-		
+		d_isActive = false;
 	}
 
 	@Override
@@ -48,15 +54,12 @@ public class DebugProtocol extends NomadProtocol {
 	}
 
 	@Override
-	public void setPWMOutput(int channel, double value) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		System.out.println("Running debug protocol");
+		while (d_isActive) {
+			// DO STUFF
+		}
+		System.out.println("DONE");
 	}
 	
 }

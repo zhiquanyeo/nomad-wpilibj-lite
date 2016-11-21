@@ -1,10 +1,19 @@
 package com.zhiquanyeo.nomad.network;
 
-public class NomadConnection {
-	private NomadProtocol d_protocol;
+import java.util.HashMap;
+import java.util.Map;
+
+public class NomadConnection implements INomadProtocolListener {
+	
+	public static enum ControlState {
+		Disabled,
+		Autonomous,
+		Teleop,
+		Test
+	}
 	
 	public static void setProtocol(NomadProtocol proto) {
-		
+		s_instance.setProtocolImpl(proto);
 	}
 	
 	public static boolean subscribeDigitalInput(int channel, INomadMessageSubscriber subscriber) {
@@ -39,7 +48,16 @@ public class NomadConnection {
 		
 	}
 	
+	public static ControlState getState() {
+		return s_instance.getStateImpl();
+	}
+	
 	private static NomadConnection s_instance = new NomadConnection();
+	
+	private final Map<String, INomadMessageSubscriber> d_subscriptions = new HashMap<>();
+	private NomadProtocol d_protocol;
+	private Thread d_protoThread;
+	private ControlState d_state = ControlState.Disabled;
 	
 	protected NomadConnection() {}
 	
@@ -55,6 +73,10 @@ public class NomadConnection {
 		
 		d_protocol = proto;
 		// TODO Add subscription to the protocol
+		
+		// Start up the protocol
+		d_protoThread = new Thread(d_protocol);
+		d_protoThread.start();
 	}
 	
 	protected boolean hasProtocol() {
@@ -62,28 +84,90 @@ public class NomadConnection {
 	}
 	
 	protected boolean subscribe(String topic, INomadMessageSubscriber subscriber) {
+		if (d_subscriptions.containsKey(topic)) {
+			System.err.println("Already have a subscription for " + topic);
+			return false;
+		}
 		
+		d_subscriptions.put(topic, subscriber);
 		return true;
 	}
 	
 	protected void unsubscribe(String topic) {
-		
+		d_subscriptions.remove(topic);
 	}
 	
 	protected void publishDigitalImpl(int channel, boolean value) {
+		if (d_protocol == null) {
+			System.err.println("No Protocol set. Can't publish");
+			return;
+		}
 		
+		d_protocol.setDigitalOutput(channel, value);
 	}
 	
 	protected void publishAnalogImpl(int channel, double value) {
+		if (d_protocol == null) {
+			System.err.println("No Protocol set. Can't publish");
+			return;
+		}
 		
+		d_protocol.setAnalogOutput(channel, value);
 	}
 	
 	protected void publishPWMImpl(int channel, double value) {
+		if (d_protocol == null) {
+			System.err.println("No Protocol set. Can't publish");
+			return;
+		}
 		
+		d_protocol.setPWMOutput(channel, value);
 	}
 	
 	protected boolean publish(String topic, byte[] payload) {
 		// TODO Send a publish message on the protocol
 		return true;
 	}
+	
+	protected ControlState getStateImpl() {
+		return d_state;
+	}
+
+	@Override
+	public void onConnected() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onConnectionLost(String cause) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEndpointDigitalInputChanged(int channel, boolean value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEndpointAnalogInputChanged(int channel, double value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEndpointStatusMessage(String statusType, String message) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 }

@@ -6,10 +6,18 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import com.zhiquanyeo.nomad.network.DebugProtocol;
+import com.zhiquanyeo.nomad.network.DirectConnectProtocol;
+import com.zhiquanyeo.nomad.network.NomadConnection;
+import com.zhiquanyeo.nomad.network.NomadProtocol;
+
 public abstract class RobotBase {
+	
+	protected final DriverStation d_ds;
 	
 	protected RobotBase() {
 		// Start up communications
+		d_ds = DriverStation.getInstance();
 	}
 	
 	public void free() {}
@@ -23,23 +31,23 @@ public abstract class RobotBase {
 	}
 	
 	public boolean isDisabled() {
-		return false; // TODO - Implement
+		return d_ds.isDisabled();
 	}
 	
 	public boolean isEnabled() {
-		return true; // TODO - Implement
+		return d_ds.isEnabled();
 	}
 	
 	public boolean isAutonomous() {
-		return true;
+		return d_ds.isAutonomous();
 	}
 	
 	public boolean isTest() {
-		return false;
+		return d_ds.isTest();
 	}
 	
 	public boolean isOperatorControl() {
-		return false;
+		return d_ds.isOperatorControl();
 	}
 	
 	public boolean isNewDataAvailable() {
@@ -49,7 +57,7 @@ public abstract class RobotBase {
 	public abstract void startCompetition() throws InterruptedException;
 	
 	public static void initializeHardwareConfiguration() {
-		// Set up "hardware"
+		
 	}
 	
 	// Application Starting point
@@ -82,8 +90,8 @@ public abstract class RobotBase {
 		
 		if (line.hasOption("mode")) {
 			String incomingMode = line.getOptionValue("mode");
-			if (!incomingMode.equals("nomad") && !incomingMode.equals("direct")) {
-				System.err.println("Invalid mode provided. Should be 'nomad' or 'direct'");
+			if (!incomingMode.equals("nomad") && !incomingMode.equals("direct") && !incomingMode.equals("debug")) {
+				System.err.println("Invalid mode provided. Should be 'nomad' or 'direct' or 'debug'");
 				System.exit(1);
 				return;
 			}
@@ -115,9 +123,43 @@ public abstract class RobotBase {
 		
 		// Now we can start
 		
-		// TBD - Initialize the global systems
+		NomadProtocol protocol;
+		if (operatingMode.equals("direct")) {
+			protocol = new DirectConnectProtocol(host);
+		}
+		else {
+			// Temporary for now, shuttle everything to debug
+			protocol = new DebugProtocol();
+		}
+		NomadConnection.setProtocol(protocol);
+		RobotState.SetImplementation(DriverStation.getInstance());
 		
-		RobotBase robot;
+		RobotBase robot = new SampleRobot();
+//		try {
+//			robot = (RobotBase) Class.forName(robotName).newInstance();
+//		}
+//		catch (InstantiationException|IllegalAccessException|ClassNotFoundException e) {
+//			System.err.println("Unable to load robot");
+//			System.err.println(e.getMessage());
+//			return;
+//		}
 		
+		boolean errorOnExit = false;
+		try {
+			robot.startCompetition();
+		}
+		catch (Throwable t) {
+			t.printStackTrace();
+			errorOnExit = true;
+		}
+		finally {
+			System.err.println("WARNING: Robots don't quit");
+			if (errorOnExit) {
+				System.err.println("---> The startCompeition() method (or methods called by it) should have handled the exception above");
+			}
+			else {
+				System.err.println("---> Unexpected return from startCompetition() method");
+			}
+		}
 	}
 }

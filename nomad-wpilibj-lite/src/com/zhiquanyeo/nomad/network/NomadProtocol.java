@@ -1,8 +1,12 @@
 package com.zhiquanyeo.nomad.network;
 
+import java.util.ArrayList;
+
 public abstract class NomadProtocol implements Runnable {
 	protected String d_protocolName;
 	protected String d_protocolVersion;
+	
+	protected ArrayList<INomadProtocolListener> d_subscribers = new ArrayList<>();
 	
 	public String getName() {
 		return d_protocolName;
@@ -27,4 +31,14 @@ public abstract class NomadProtocol implements Runnable {
 	
 	public abstract void shutdown();
 	public abstract void reset();
+	
+	public synchronized void addSubscriber(INomadProtocolListener subscriber) {
+		d_subscribers.add(subscriber);
+	}
+	
+	public synchronized void removeSubscriber(INomadProtocolListener subscriber) {
+		while (d_subscribers.contains(subscriber)) {
+			d_subscribers.remove(subscriber);
+		}
+	}
 }

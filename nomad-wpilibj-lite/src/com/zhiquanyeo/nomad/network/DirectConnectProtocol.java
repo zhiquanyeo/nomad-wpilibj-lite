@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,8 @@ public class DirectConnectProtocol extends NomadProtocol {
 	
 	private Map<Integer, Boolean> d_digitalInputValues = new HashMap<>();
 	private Map<Integer, Double> d_analogInputValues = new HashMap<>();
+	
+	private ArrayList<String> d_messageQueue = new ArrayList<>();
 	
 	private BufferedReader d_in;
 	private PrintWriter d_out;
@@ -56,20 +59,35 @@ public class DirectConnectProtocol extends NomadProtocol {
 
 	@Override
 	public void setDigitalOutput(int channel, boolean value) {
-		// TODO Auto-generated method stub
-		
+		String outString = "D:" + channel + ":" + (value ? "1":"0");
+		if (d_out == null) {
+			d_messageQueue.add(outString);
+		}
+		else {
+			d_out.println(outString);
+		}
 	}
 
 	@Override
 	public void setAnalogOutput(int channel, double value) {
-		// TODO Auto-generated method stub
-		
+		String outString = "A:" + channel + ":" + value;
+		if (d_out == null) {
+			d_messageQueue.add(outString);
+		}
+		else {
+			d_out.println(outString);
+		}
 	}
 
 	@Override
 	public void setPWMOutput(int channel, double value) {
-		// TODO Auto-generated method stub
-		
+		String outString = "P:" + channel + ":" + value;
+		if (d_out == null) {
+			d_messageQueue.add(outString);
+		}
+		else {
+			d_out.println(outString);
+		}
 	}
 
 	@Override
@@ -128,6 +146,15 @@ public class DirectConnectProtocol extends NomadProtocol {
 			System.err.println("Could not connect to host: " + d_host);
 			return;
 		}
+		
+		// Process any queues
+		if (d_messageQueue.size() > 0) {
+			for (int i = 0; i < d_messageQueue.size(); i++) {
+				d_out.println(d_messageQueue.get(i));
+			}
+		}
+		
+		d_messageQueue.clear();
 				
 		while (d_isActive) {
 			try {

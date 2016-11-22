@@ -10,6 +10,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+
 public class DirectConnectProtocol extends NomadProtocol {
 	private String d_host;
 	private int d_port;
@@ -41,6 +43,8 @@ public class DirectConnectProtocol extends NomadProtocol {
 		
 		System.out.println("Host: " + d_host);
 		System.out.println("Port: " + d_port);
+		
+		d_isActive = true;
 	}
 
 	@Override

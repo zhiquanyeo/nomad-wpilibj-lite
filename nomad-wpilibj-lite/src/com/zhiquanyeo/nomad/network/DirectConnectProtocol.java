@@ -14,6 +14,7 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 
 public class DirectConnectProtocol extends NomadProtocol {
+	
 	private String d_host;
 	private int d_port;
 	private Socket d_socket;
@@ -132,6 +133,43 @@ public class DirectConnectProtocol extends NomadProtocol {
 	
 	private void processLine(String line) {
 		// This is where the protocol meat comes in
+		String[] parts = line.split(":");
+		if (parts.length == 0) {
+			return;
+		}
+		
+		switch (parts[0].trim()) {
+			case "D": {
+				
+			} break;
+			case "A": {
+				
+			} break;
+			case "M": {
+				broadcastModeChanged(parts[1].trim());
+			} break;
+			default: {
+				System.err.println("Invalid message type: " + line);
+			}
+		}
+	}
+	
+	private void broadcastDigitalInputChanged(int channel, boolean value) {
+		for (int i = 0; i < d_subscribers.size(); i++) {
+			d_subscribers.get(i).onEndpointDigitalInputChanged(channel, value);
+		}
+	}
+	
+	private void broadcastAnalogInputChanged(int channel, double value) {
+		for (int i = 0; i < d_subscribers.size(); i++) {
+			d_subscribers.get(i).onEndpointAnalogInputChanged(channel, value);
+		}
+	}
+	
+	private void broadcastModeChanged(String mode) {
+		for (int i = 0; i < d_subscribers.size(); i++) {
+			d_subscribers.get(i).onModeChanged(mode);
+		}
 	}
 	
 	@Override

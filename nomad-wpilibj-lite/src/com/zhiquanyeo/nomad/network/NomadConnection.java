@@ -67,12 +67,12 @@ public class NomadConnection implements INomadProtocolListener {
 		}
 		
 		if (d_protocol != null) {
-			// TODO Remove this as a subscriber
+			d_protocol.removeSubscriber(this);
 			d_protocol.shutdown();
 		}
 		
 		d_protocol = proto;
-		// TODO Add subscription to the protocol
+		d_protocol.addSubscriber(this);
 		
 		// Start up the protocol
 		d_protoThread = new Thread(d_protocol);
@@ -167,6 +167,31 @@ public class NomadConnection implements INomadProtocolListener {
 	public void onEndpointStatusMessage(String statusType, String message) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void onModeChanged(String mode) {
+		switch (mode) {
+			case "disabled":
+				d_state = ControlState.Disabled;
+				break;
+				
+			case "auto":
+				d_state = ControlState.Autonomous;
+				break;
+				
+			case "teleop":
+				d_state = ControlState.Teleop;
+				break;
+				
+			case "test":
+				d_state = ControlState.Test;
+				break;
+				
+			default:
+				System.err.println("Invalid Mode Detected. Disabling");
+				d_state = ControlState.Disabled;
+		}
 	}
 	
 	

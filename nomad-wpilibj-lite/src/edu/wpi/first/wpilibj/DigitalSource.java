@@ -44,8 +44,15 @@ public class DigitalSource extends SensorBase implements INomadMessageSubscriber
 	
 	@Override
 	public void onMessageReceived(String message) {
-		// TODO Auto-generated method stub
-		// TODO Actually implement this please
+		if (message.equals("1") || message.equals("true")) {
+			d_sourceVal = true;
+		}
+		else if (message.equals("0") || message.equals("false")) {
+			d_sourceVal = false;
+		}
+		else {
+			System.err.println("Invalid data for digital port " + d_channel);
+		}
 	}
 
 }

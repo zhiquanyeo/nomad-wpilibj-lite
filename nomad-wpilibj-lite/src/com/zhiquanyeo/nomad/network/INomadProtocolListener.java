@@ -8,4 +8,5 @@ public interface INomadProtocolListener {
 	void onEndpointDigitalInputChanged(int channel, boolean value);
 	void onEndpointAnalogInputChanged(int channel, double value);
 	void onEndpointStatusMessage(String statusType, String message);
+	void onModeChanged(String mode);
 }

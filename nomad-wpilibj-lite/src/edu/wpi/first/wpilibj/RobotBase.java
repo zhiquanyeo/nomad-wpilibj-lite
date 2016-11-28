@@ -120,7 +120,7 @@ public abstract class RobotBase {
 		System.out.println("Host: " + host);
 		System.out.println("ClientID: " + clientId);
 		System.out.println("Robot Class: " + otherArgs[0]);
-		
+				
 		// Now we can start
 		
 		NomadProtocol protocol;
@@ -134,15 +134,16 @@ public abstract class RobotBase {
 		NomadConnection.setProtocol(protocol);
 		RobotState.SetImplementation(DriverStation.getInstance());
 		
-		RobotBase robot = new SampleRobot();
-//		try {
-//			robot = (RobotBase) Class.forName(robotName).newInstance();
-//		}
-//		catch (InstantiationException|IllegalAccessException|ClassNotFoundException e) {
-//			System.err.println("Unable to load robot");
-//			System.err.println(e.getMessage());
-//			return;
-//		}
+		RobotBase robot;
+		try {
+			robot = (RobotBase) Class.forName(robotName).newInstance();
+		}
+		catch (InstantiationException|IllegalAccessException|ClassNotFoundException e) {
+			System.err.println("Unable to load robot");
+			System.err.println(e.getMessage());
+			System.exit(1);
+			return;
+		}
 		
 		boolean errorOnExit = false;
 		try {
@@ -155,7 +156,7 @@ public abstract class RobotBase {
 		finally {
 			System.err.println("WARNING: Robots don't quit");
 			if (errorOnExit) {
-				System.err.println("---> The startCompeition() method (or methods called by it) should have handled the exception above");
+				System.err.println("---> The startCompetition() method (or methods called by it) should have handled the exception above");
 			}
 			else {
 				System.err.println("---> Unexpected return from startCompetition() method");

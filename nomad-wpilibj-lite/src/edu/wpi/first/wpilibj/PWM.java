@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilibj;
 
+import com.zhiquanyeo.nomad.network.NomadConnection;
+
 public class PWM extends SensorBase {
 	private int d_channel;
 	private double d_rawVal = 0.0;
@@ -61,7 +63,7 @@ public class PWM extends SensorBase {
 	 */
 	public void setRaw(int value) {
 		d_rawValInt = value;
-		// TODO Publish This
+		NomadConnection.publishPWM(d_channel, d_rawValInt);
 	}
 	
 	public int getRaw() {

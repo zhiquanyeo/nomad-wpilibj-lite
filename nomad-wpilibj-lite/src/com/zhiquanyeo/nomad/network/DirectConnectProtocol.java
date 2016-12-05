@@ -67,6 +67,11 @@ public class DirectConnectProtocol extends NomadProtocol {
 		else {
 			d_out.println(outString);
 		}
+		
+		try {
+			Thread.sleep(1);
+		}
+		catch (InterruptedException e) {}
 	}
 
 	@Override
@@ -78,6 +83,11 @@ public class DirectConnectProtocol extends NomadProtocol {
 		else {
 			d_out.println(outString);
 		}
+		
+		try {
+			Thread.sleep(1);
+		}
+		catch (InterruptedException e) {}
 	}
 
 	@Override
@@ -89,6 +99,11 @@ public class DirectConnectProtocol extends NomadProtocol {
 		else {
 			d_out.println(outString);
 		}
+		
+		try {
+			Thread.sleep(1);
+		}
+		catch (InterruptedException e) {}
 	}
 
 	@Override

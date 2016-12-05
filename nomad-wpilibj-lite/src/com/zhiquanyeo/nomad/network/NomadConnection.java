@@ -129,7 +129,7 @@ public class NomadConnection implements INomadProtocolListener {
 		return true;
 	}
 	
-	protected ControlState getStateImpl() {
+	protected synchronized ControlState getStateImpl() {
 		return d_state;
 	}
 
@@ -170,7 +170,7 @@ public class NomadConnection implements INomadProtocolListener {
 	}
 
 	@Override
-	public void onModeChanged(String mode) {
+	public synchronized void onModeChanged(String mode) {
 		switch (mode) {
 			case "disabled":
 				d_state = ControlState.Disabled;

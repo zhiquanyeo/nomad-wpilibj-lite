@@ -155,10 +155,22 @@ public class DirectConnectProtocol extends NomadProtocol {
 		
 		switch (parts[0].trim()) {
 			case "D": {
-				
+			    if (parts.length < 3) {
+			        return;
+			    }
+				// parts[1] is channel, parts[2] is value
+			    int channel = Integer.parseInt(parts[1].trim());
+			    int value = Integer.parseInt(parts[2].trim());
+			    broadcastDigitalInputChanged(channel, (value == 1));
 			} break;
 			case "A": {
-				
+			    if (parts.length < 3) {
+                    return;
+                }
+                // parts[1] is channel, parts[2] is value
+                int channel = Integer.parseInt(parts[1].trim());
+                double value = Double.parseDouble(parts[2].trim());
+                broadcastAnalogInputChanged(channel, value);
 			} break;
 			case "M": {
 				broadcastModeChanged(parts[1].trim());

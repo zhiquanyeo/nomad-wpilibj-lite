@@ -17,7 +17,8 @@ public class NomadConnection implements INomadProtocolListener {
 	}
 	
 	public static boolean subscribeDigitalInput(int channel, INomadMessageSubscriber subscriber) {
-		return true;
+		s_instance.subscribe("D-" + channel, subscriber);
+	    return true;
 	}
 	
 	public static void unsubscribeDigitalInput(int channel) {
@@ -25,7 +26,8 @@ public class NomadConnection implements INomadProtocolListener {
 	}
 	
 	public static boolean subscribeAnalogInput(int channel, INomadMessageSubscriber subscriber) {
-		return true;
+	    s_instance.subscribe("A-" + channel, subscriber);
+	    return true;
 	}
 	
 	public static void unsubscribeAnalogInput(int channel) {
@@ -160,14 +162,16 @@ public class NomadConnection implements INomadProtocolListener {
 
 	@Override
 	public void onEndpointDigitalInputChanged(int channel, boolean value) {
-		// TODO Auto-generated method stub
-		
+		if (d_subscriptions.containsKey("D-" + channel)) {
+		    d_subscriptions.get("D-" + channel).onMessageReceived(value ? "1" : "0");
+		}
 	}
 
 	@Override
 	public void onEndpointAnalogInputChanged(int channel, double value) {
-		// TODO Auto-generated method stub
-		
+	    if (d_subscriptions.containsKey("A-" + channel)) {
+            d_subscriptions.get("A-" + channel).onMessageReceived(Double.toString(value));
+        }
 	}
 
 	@Override

@@ -121,7 +121,14 @@ public class NomadConnection implements INomadProtocolListener {
 			return;
 		}
 		
-		d_protocol.setPWMOutput(channel, value);
+		// Convert 0 - 255 to -255 to 255
+		// shift left by 127
+		int inMin = 0, inMax = 255;
+		int outMin = -255, outMax = 255;
+		
+		int outVal = ((int)value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin; 
+		
+		d_protocol.setPWMOutput(channel, outVal);
 	}
 	
 	protected boolean publish(String topic, byte[] payload) {

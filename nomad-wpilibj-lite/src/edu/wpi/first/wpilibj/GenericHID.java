@@ -22,6 +22,16 @@ public abstract class GenericHID {
 		}
 	}
 	
+	private final int d_port;
+	
+	public GenericHID(int port) {
+		d_port = port;
+	}
+	
+	public int getPort() {
+		return d_port;
+	}
+	
 	public final double getX() {
 		return getX(Hand.kRight);
 	}

@@ -61,5 +61,11 @@ public class DebugProtocol extends NomadProtocol {
 		}
 		System.out.println("DONE");
 	}
+
+	@Override
+	public void configureDigitalPin(int channel, NomadPinType pinType) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

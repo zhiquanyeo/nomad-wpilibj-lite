@@ -3,6 +3,12 @@ package com.zhiquanyeo.nomad.network;
 import java.util.ArrayList;
 
 public abstract class NomadProtocol implements Runnable {
+	public static enum NomadPinType {
+		OUTPUT,
+		INPUT,
+		INPUT_PULLUP
+	};
+	
 	protected String d_protocolName;
 	protected String d_protocolVersion;
 	
@@ -31,6 +37,8 @@ public abstract class NomadProtocol implements Runnable {
 	
 	public abstract void shutdown();
 	public abstract void reset();
+	
+	public abstract void configureDigitalPin(int channel, NomadPinType pinType);
 	
 	public synchronized void addSubscriber(INomadProtocolListener subscriber) {
 		d_subscribers.add(subscriber);

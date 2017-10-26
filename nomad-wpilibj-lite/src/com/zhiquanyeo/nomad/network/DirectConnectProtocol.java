@@ -105,6 +105,35 @@ public class DirectConnectProtocol extends NomadProtocol {
 		}
 		catch (InterruptedException e) {}
 	}
+	
+	@Override
+	public void configureDigitalPin(int channel, NomadPinType pinType) {
+		int modeVal = 0;
+		switch (pinType) {
+			case OUTPUT:
+				modeVal = 0;
+				break;
+			case INPUT:
+				modeVal = 1;
+				break;
+			case INPUT_PULLUP:
+				modeVal = 2;
+				break;
+			
+		}
+		String outString = "CFG:" + channel + ":" + modeVal;
+		if (d_out == null) {
+			d_messageQueue.add(outString);
+		}
+		else {
+			d_out.println(outString);
+		}
+		
+		try {
+			Thread.sleep(1);
+		}
+		catch (InterruptedException e) {}
+	}
 
 	@Override
 	public boolean getDigitalInput(int channel) {
@@ -240,4 +269,5 @@ public class DirectConnectProtocol extends NomadProtocol {
 			System.err.println("Error while shutting down protocol");
 		}
 	}
+
 }

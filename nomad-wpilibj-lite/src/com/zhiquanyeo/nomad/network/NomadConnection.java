@@ -3,6 +3,8 @@ package com.zhiquanyeo.nomad.network;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.zhiquanyeo.nomad.network.NomadProtocol.NomadPinType;
+
 public class NomadConnection implements INomadProtocolListener {
 	
 	public static enum ControlState {
@@ -131,6 +133,15 @@ public class NomadConnection implements INomadProtocolListener {
 		int outVal = ((int)value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin; 
 		
 		d_protocol.setPWMOutput(channel, outVal);
+	}
+	
+	protected void configureDigitalPin(int channel, NomadPinType type) {
+		if (d_protocol == null) {
+			System.err.println("No Protocol set. Can't publish");
+			return;
+		}
+		
+		d_protocol.configureDigitalPin(channel, type);
 	}
 	
 	protected boolean publish(String topic, byte[] payload) {
